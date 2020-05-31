@@ -1,5 +1,7 @@
+var inquirer = require("inquirer");
+
 function DigitalPal() {
-  this.hungry = false;
+  this.hungry = true;
   this.sleepy = false;
   this.bored = true;
   this.age = 0;
@@ -26,6 +28,16 @@ DigitalPal.prototype.sleep = function () {
     this.increaseAge();
   } else {
     console.log("I'm not sleepy!");
+  }
+};
+
+DigitalPal.prototype.play = function () {
+  if (this.bored === true) {
+    console.log("Yay, let's play!");
+    this.bored = false;
+    this.hungry = true;
+  } else {
+    console.log("Not right now. Later?");
   }
 };
 
@@ -84,32 +96,76 @@ DigitalPal.prototype.buyNewFurniture = function () {
   }
 };
 
-var inquirer = require("inquirer");
-
-inquirer
-  .prompt([
-    {
-      type: "list",
-      message: "What would you like to do?",
-      name: "choice",
-      choices: [
-        "Eat",
-        "Go to sleep",
-        "Play",
-        "Meow",
-        "Woof",
-        "Go outside",
-        "Go inside",
-        "Destroy furniture",
-        "Buy new furniture",
-        "Quit",
-      ],
-    },
-  ])
-  .then(function (res) {
-    if (res.choice === "Quit") {
-      console.log("You quit");
-    } else {
-      console.log("You chose an option that was not 'Quit'");
-    }
+DigitalPal.prototype.showStats = function () {
+  console.log({
+    Hungry: this.hungry,
+    Sleepy: this.sleepy,
+    Bored: this.bored,
+    Age: this.age,
+    Outside: this.outside,
+    House_Condition: this.houseCondition + "%",
   });
+};
+
+const pet = new DigitalPal();
+
+function promptUser() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What would you like to do?",
+        name: "choice",
+        choices: [
+          "Eat",
+          "Go to sleep",
+          "Play",
+          "Meow",
+          "Woof",
+          "Go outside",
+          "Go inside",
+          "Destroy furniture",
+          "Buy new furniture",
+          "Show stats",
+          "Quit",
+        ],
+      },
+    ])
+    .then(function (res) {
+      if (res.choice === "Quit") {
+        console.log("You quit the game.");
+      } else if (res.choice === "Eat") {
+        pet.feed();
+        promptUser();
+      } else if (res.choice === "Go to sleep") {
+        pet.sleep();
+        promptUser();
+      } else if (res.choice === "Play") {
+        pet.play();
+        promptUser();
+      } else if (res.choice === "Meow") {
+        pet.meow();
+        promptUser();
+      } else if (res.choice === "Woof") {
+        pet.bark();
+        promptUser();
+      } else if (res.choice === "Go outside") {
+        pet.goOutside();
+        promptUser();
+      } else if (res.choice === "Go inside") {
+        pet.goInside();
+        promptUser();
+      } else if (res.choice === "Destroy furniture") {
+        pet.destroyFurniture();
+        promptUser();
+      } else if (res.choice === "Buy new furniture") {
+        pet.buyNewFurniture();
+        promptUser();
+      } else if (res.choice === "Show stats") {
+        pet.showStats();
+        promptUser();
+      }
+    });
+}
+
+promptUser();
